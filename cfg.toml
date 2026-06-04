@@ -1,0 +1,6 @@
+activation_key = 0x5D
+
+commands = [
+    {name = 'clc', path = 'calc.exe'},
+    {name = 'txt', path = 'notepad.exe'},
+]
