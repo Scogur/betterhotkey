@@ -1,0 +1,39 @@
+name: Manual Release
+
+on:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    name: Build Windows Exe and Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build Release Binary
+        run: cargo build --release
+
+      - name: Locate and Rename Binary
+        shell: bash
+        run: |
+          cp target/release/betterhotkey.exe ./betterhotkey.exe
+
+      - name: Create GitHub Release and Upload Exe
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "manual-release-${{ github.run_number }}"
+          name: "Release ${{ github.run_number }}"
+          draft: false
+          prerelease: false
+          files: |
+            betterhotkey.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
