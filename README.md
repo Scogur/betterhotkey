@@ -13,7 +13,7 @@ To get started, place the following files in the same directory:
 * `betterhotkey.exe`
 * `cfg.toml`
 
-> `cfg.toml` is created automatically the first time you run `betterhotkey.exe` if none is found.
+> `cfg.toml` is created automatically next to `betterhotkey.exe` the first time you run it if none is found. If `cfg.toml` can't be read or contains an error, a message box explains what went wrong.
 
 ## Changing the Activation Key
 
@@ -25,7 +25,7 @@ To get started, place the following files in the same directory:
 
 ## Adding New Hotkeys
 
-Add entries to the hotkeys list using the following format:
+Add entries to the `commands` list using the following format:
 
 ```toml
 {name = 'clc', path = 'calc.exe'}
@@ -33,20 +33,24 @@ Add entries to the hotkeys list using the following format:
 
 ### Fields
 
-* `name` — The key sequence you type while holding the activation key. Matching is case-insensitive.
-* `path` — The executable to launch or the command to execute.
+* `name` — The key sequence you type while holding the activation key. Only letters (A–Z) are recorded. Matching is case-insensitive.
+* `path` — The executable to launch or the command to execute. A path to an existing file is launched directly; anything else runs as a `cmd` command line, so it can take arguments.
 
 Examples:
 
 ```toml
 {name = 'clc', path = 'calc.exe'}
 {name = 'txt', path = 'notepad.exe'}
-{name = 'git', path = 'git status'}
+{name = 'cde', path = 'C:/Program Files/Microsoft VS Code/Code.exe'}
+{name = 'prj', path = '"C:/Program Files/Microsoft VS Code/Code.exe" C:/Projects/app'}
+{name = 'git', path = 'start cmd /k git status'}
 ```
 
 ### Notes
 
-* If specifying a file path, avoid using backslashes (`\`) or use `\\` instead.
+* Commands run without a window, so use `start cmd /k ...` (as above) to see the output of a console program.
+* If the program path contains spaces and is followed by arguments, wrap the path in double quotes.
+* Both `/` and `\` work in paths. In single-quoted strings (`'...'`) a backslash needs no escaping; in double-quoted strings write it as `\\`.
 
 ## Applying Changes
 
