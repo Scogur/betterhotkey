@@ -1,12 +1,15 @@
 #![windows_subsystem = "windows"]
 
 mod autostart;
+mod clipboard;
 mod config;
 mod hook;
+mod input;
 mod keys;
 mod launcher;
 mod log;
 mod overlay;
+mod window;
 
 use windows::{
     core::{HSTRING, Result, w},
