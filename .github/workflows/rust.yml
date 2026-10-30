@@ -1,7 +1,10 @@
-name: Manual Release
+name: Release
 
+# Runs when a version tag like v0.2.0 is pushed.
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
 
 env:
   CARGO_TERM_COLOR: always
@@ -18,8 +21,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Check Tag Matches Cargo.toml Version
+        shell: bash
+        run: |
+          version=$(grep -m1 '^version' Cargo.toml | cut -d '"' -f2)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME doesn't match version $version in Cargo.toml"
+            exit 1
+          fi
+
       - name: Install Rust Toolchain
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Run Tests
+        run: cargo test --release
 
       - name: Build Release Binary
         run: cargo build --release
@@ -32,10 +47,8 @@ jobs:
       - name: Create GitHub Release and Upload Exe
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "manual-release-${{ github.run_number }}"
-          name: "Release ${{ github.run_number }}"
-          draft: false
-          prerelease: false
+          name: "betterhotkey ${{ github.ref_name }}"
+          generate_release_notes: true
           files: |
             betterhotkey.exe
         env:
